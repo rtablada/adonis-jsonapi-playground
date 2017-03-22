@@ -1,5 +1,8 @@
 const i = require('inflect');
-const keysIn = require('lodash.keysin');
+const pick = require('lodash.pick');
+const unionBy = require('lodash.unionby');
+const _ = require('lodash');
+const Lucid = require('adonis-lucid/src/Lucid/Model');
 
 class JsonApiRelation {
   constructor(serializer, { included = false, excludeRelation }) {
@@ -37,13 +40,28 @@ class JsonApiView {
     return [];
   }
 
-  getRelations() {
-    const proto = this.constructor.prototype;
+  unwrap(relationData) {
+    if (relationData instanceof Lucid) {
+      return relationData.toJSON();
+    } else if (typeof relationData.map === 'function') {
+      return _(relationData).map(r => this.unwrap(r)).value();
+    }
 
-    return Object.getOwnPropertyNames(proto)
-      .filter(prop => ['constructor', 'attributes'].indexOf(prop) !== 0)
-      .filter(prop => typeof this[prop] === 'function')
-      .filter(prop => this[prop]() instanceof JsonApiRelation);
+    return relationData;
+  }
+
+  async loadRelation(model, relationName) {
+    if (model[relationName] && typeof model[relationName] !== 'function') {
+      return model[relationName];
+    }
+
+    if (model.relations[relationName]) {
+      return this.unwrap(model.relations[relationName]);
+    }
+
+    await model.related(relationName).load();
+
+    return this.unwrap(model.relations[relationName]);
   }
 
   hasMany(serializer, options) {
@@ -53,24 +71,41 @@ class JsonApiView {
   belongsTo(serializer, options) {
     return new JsonApiRelation(serializer, options);
   }
-  buildNoRelationships() {
-    return {
-      type: this.type,
-      attributes: this.attributes,
-    };
+
+
+  get relations() {
+    return {};
   }
 
-  build({ excludeRelation } = {}) {
-    const obj = this.buildNoRelationships();
+  async build(data, request) {
+    const attributes = pick(data.toJSON(), this.attributes);
 
-    this.getRelations().forEach((relation) => {
-      if (relation !== excludeRelation) {
-        obj.attributes.push(relation);
-        obj[relation] = this[relation]().build(this.use);
-      }
-    });
+    const requestedRelations = request.get().include ?
+      request.get().include.split(',') : [];
 
-    return obj;
+    const loadedRelations = Object.keys(data.relations || {});
+
+    const eagerLoadedRelations = Object.keys(this.relations)
+      .filter(key => this.relations[key].strategy === 'embed');
+
+    const allRelations = unionBy(requestedRelations, loadedRelations, eagerLoadedRelations);
+
+    const relationData = await Promise.all(
+      allRelations.map(relationName => this.loadRelation(data, relationName)));
+
+    const relations = allRelations.reduce((obj, key, index) => {
+      obj[key] = relationData[index];
+
+      return obj;
+    }, {});
+
+    return {
+      data: {
+        id: data.id,
+        attributes,
+        relationships: _.mapValues(relations, v => v.map(o => ({ id: o.id, type: 'post' }))),
+      },
+    };
   }
 }
 

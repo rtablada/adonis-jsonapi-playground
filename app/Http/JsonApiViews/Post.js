@@ -5,11 +5,16 @@ class Post extends JsonApiView {
     return ['title'];
   }
 
+  get relations() {
+    return {
+      user: {
+        strategy: 'embed',
+      },
+    };
+  }
+
   user() {
-    return this.belongsTo('App/Http/JsonApiViews/User', {
-      included: true,
-      excludeRelation: 'posts',
-    });
+    return this.belongsTo('App/Http/JsonApiViews/User');
   }
 
 }

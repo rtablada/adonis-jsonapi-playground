@@ -28,6 +28,7 @@
     "lodash.keysin": "^4.2.0",
     "lodash.mapkeys": "^4.6.0",
     "lodash.pick": "^4.4.0",
+    "lodash.unionby": "^4.8.0",
     "sqlite3": "^3.1.8",
     "standard": "^8.6.0",
     "youch": "^2.0.4"

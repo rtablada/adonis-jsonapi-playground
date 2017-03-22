@@ -4,34 +4,25 @@
 const { JsonApiRequest, JsonApiError, ValidationError } = require('./JsonApiRequest');
 
 function setupSerializer(use) {
-  return function (serializerName, data) {
+  return function (serializerName, data, request) {
     const helpers = use('Helpers');
 
     const View = use(helpers.makeNameSpace('Http/JsonApiViews', serializerName));
     const view = new View(use);
 
-    if (data.toJSON && typeof data.toJSON === 'function') {
-      data = data.toJSON();
-    }
-
-    const options = Object.assign({}, view.build());
-
-    return options;
+    return view.build(data, request);
   };
 }
 
 class JsonApi {
 
   constructor(use) {
-    const Response = use('Adonis/Src/Response');
+    this.use = use;
     const serializer = setupSerializer(use);
+    this.serializer = serializer;
+    const Response = use('Adonis/Src/Response');
 
     Response.macro('serializePayload', serializer);
-    Response.macro('jsonApi', function (serializerName, data, statusCode = 200) {
-      const json = serializer(serializerName, data);
-
-      this.status(statusCode).json(json);
-    });
 
     Response.macro('isJsonApiError', err => err instanceof JsonApiError);
     Response.macro('isValidationError', err => err instanceof ValidationError);
@@ -52,6 +43,11 @@ class JsonApi {
 
   * handle(request, response, next) {
     request.jsonApi = new JsonApiRequest(request);
+    response.jsonApi = (serializerName, data, statusCode = 200)  => {
+      this.serializer(serializerName, data, request).then((json) => {
+        response.status(statusCode).json(json);
+      });
+    };
 
     yield next;
   }

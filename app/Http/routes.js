@@ -24,7 +24,5 @@ const User = use('App/Model/User');
 Route.get('/user', function* (request, response) {
   const user = yield User.with('posts').first();
 
-  debugger;
-
   response.jsonApi('User', user);
 });
