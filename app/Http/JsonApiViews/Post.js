@@ -1,4 +1,4 @@
-const JsonApiView = require('adonis-jsonapi/src/JsonApiView');
+const JsonApiView = require('../../../src/JsonApiView');
 
 class Post extends JsonApiView {
   get attributes() {

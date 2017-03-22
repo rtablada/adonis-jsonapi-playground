@@ -1,6 +1,6 @@
 'use strict';
 
-const JsonApiSerializer = require('jsonapi-serializer').Serializer;
+// const JsonApiSerializer = require('jsonapi-serializer').Serializer;
 const { JsonApiRequest, JsonApiError, ValidationError } = require('./JsonApiRequest');
 
 function setupSerializer(use) {
@@ -14,13 +14,9 @@ function setupSerializer(use) {
       data = data.toJSON();
     }
 
-    const pluralizeType = Array.isArray(data);
+    const options = Object.assign({}, view.build());
 
-    const options = Object.assign({}, view.build(), { pluralizeType });
-
-    const json = new JsonApiSerializer(view.type, options).serialize(data);
-
-    return json;
+    return options;
   };
 }
 

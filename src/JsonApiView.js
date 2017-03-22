@@ -30,14 +30,14 @@ class JsonApiView {
   }
 
   get loadedData() {
-    return [].concat(this.attributes, this.relations);
+    return [].concat(this.attributes, this.getRelations());
   }
 
   get attributes() {
     return [];
   }
 
-  get relations() {
+  getRelations() {
     const proto = this.constructor.prototype;
     return Object.getOwnPropertyNames(proto)
       .filter((prop) => ['constructor', 'attributes'].indexOf(prop) !== 0)
@@ -62,7 +62,7 @@ class JsonApiView {
   build({ excludeRelation } = {}) {
     const obj = this.buildNoRelationships();
 
-    this.relations.forEach((relation) => {
+    this.getRelations().forEach((relation) => {
       if (relation !== excludeRelation) {
         obj.attributes.push(relation);
         obj[relation] = this[relation]().build(this.use);
