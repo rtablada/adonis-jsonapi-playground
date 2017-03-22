@@ -9,7 +9,7 @@ class ValidationError extends NE.LogicalException {
   }
 
   makeErrors() {
-    return this.validator.messages().map((err) => ({
+    return this.validator.messages().map(err => ({
       status: this.status,
       source: { pointer: `/data/attributes/${err.field}` },
       title: 'Invalid Attribute',
@@ -98,8 +98,9 @@ class JsonApiRequest {
       const { data: { relationships } = {} } = this.request.all() || {};
 
       if (Array.isArray(relationships[relationName].data)) {
-        return relationships[relationName].data.map((i) => i.id);
+        return relationships[relationName].data.map(i => i.id);
       }
+
       return relationships[relationName].data.id;
     } catch (e) {
       throw new JsonApiError({

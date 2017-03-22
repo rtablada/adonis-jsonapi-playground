@@ -1,6 +1,6 @@
-'use strict'
+'use strict';
 
-const Env = use('Env')
+const Env = use('Env');
 
 module.exports = {
   /*
@@ -27,7 +27,7 @@ module.exports = {
   */
   cookie: 'adonis-session',
 
-  
+
   /*
   |--------------------------------------------------------------------------
   | Redis options
@@ -45,10 +45,10 @@ module.exports = {
     host: '127.0.0.1',   // Redis host
     family: 4,           // 4 (IPv4) or 6 (IPv6)
     password: 'auth',
-    db: 0
+    db: 0,
   },
 
-  
+
   /*
   |--------------------------------------------------------------------------
   | Session Age
@@ -138,7 +138,7 @@ module.exports = {
   |
   */
   file: {
-    directory: 'sessions'
-  }
+    directory: 'sessions',
+  },
 
-}
+};

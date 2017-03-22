@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /*
 |-----------------------------------------------------------------------------
@@ -14,4 +14,4 @@
 | Ws.channel('/chat', 'ChatController')
 */
 
-const Ws = use('Ws')
+const Ws = use('Ws');

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /*
 |--------------------------------------------------------------------------
@@ -15,14 +15,16 @@
 | Route.resource('user', 'UserController')
 */
 
-const Route = use('Route')
+const Route = use('Route');
 
-Route.on('/').render('welcome')
+Route.on('/').render('welcome');
 
-const User = use('App/Model/User')
+const User = use('App/Model/User');
 
-Route.get('/user', function *(request, response) {
-    const user = yield User.with('posts').first()
+Route.get('/user', function* (request, response) {
+  const user = yield User.with('posts').first();
 
-    response.jsonApi('User', user)
-});;
+  debugger;
+
+  response.jsonApi('User', user);
+});

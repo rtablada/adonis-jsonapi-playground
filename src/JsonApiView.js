@@ -39,10 +39,11 @@ class JsonApiView {
 
   getRelations() {
     const proto = this.constructor.prototype;
+
     return Object.getOwnPropertyNames(proto)
-      .filter((prop) => ['constructor', 'attributes'].indexOf(prop) !== 0)
-      .filter((prop) => typeof this[prop] === 'function')
-      .filter((prop) => this[prop]() instanceof JsonApiRelation);
+      .filter(prop => ['constructor', 'attributes'].indexOf(prop) !== 0)
+      .filter(prop => typeof this[prop] === 'function')
+      .filter(prop => this[prop]() instanceof JsonApiRelation);
   }
 
   hasMany(serializer, options) {

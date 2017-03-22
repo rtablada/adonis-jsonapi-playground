@@ -33,8 +33,8 @@ class JsonApi {
       this.status(statusCode).json(json);
     });
 
-    Response.macro('isJsonApiError', (err) => err instanceof JsonApiError);
-    Response.macro('isValidationError', (err) => err instanceof ValidationError);
+    Response.macro('isJsonApiError', err => err instanceof JsonApiError);
+    Response.macro('isValidationError', err => err instanceof ValidationError);
     Response.macro('jsonApiError', function (err) {
       if (err instanceof ValidationError) {
         this.status(err.status).json({ errors: err.makeErrors() });

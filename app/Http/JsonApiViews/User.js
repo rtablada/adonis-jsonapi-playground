@@ -8,7 +8,7 @@ class User extends JsonApiView {
   posts() {
     return this.hasMany('App/Http/JsonApiViews/Post', {
       included: true,
-      excludeRelation: 'user'
+      excludeRelation: 'user',
     });
   }
 

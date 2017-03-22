@@ -1,6 +1,6 @@
-'use strict'
+'use strict';
 
-const Middleware = use('Middleware')
+const Middleware = use('Middleware');
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +18,7 @@ const globalMiddleware = [
   'Adonis/Middleware/Flash',
   'Adonis/Middleware/AuthInit',
   'AdonisJsonApi/Middleware',
-]
+];
 
 /*
 |--------------------------------------------------------------------------
@@ -30,8 +30,8 @@ const globalMiddleware = [
 |
 */
 const namedMiddleware = {
-  auth: 'Adonis/Middleware/Auth'
-}
+  auth: 'Adonis/Middleware/Auth',
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -41,5 +41,5 @@ const namedMiddleware = {
 | Here we finally register our defined middleware to Middleware provider.
 |
 */
-Middleware.global(globalMiddleware)
-Middleware.named(namedMiddleware)
+Middleware.global(globalMiddleware);
+Middleware.named(namedMiddleware);
